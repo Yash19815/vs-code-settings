@@ -1,8 +1,8 @@
 /* ============================================================
    VS CODE CUSTOM SCRIPT
    ------------------------------------------------------------
-   [1] Command palette backdrop blur   (your original code)
-   [2] Dynamic watermark icon          (new — config below)
+   [1] Command palette backdrop blur   (original)
+   [2] Dynamic watermark icon          (config below)
    ============================================================ */
 
 
@@ -111,9 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
    ------------------------------------------------------------
    WHAT IT DOES
    ------------
-   The empty-editor watermark (the logo in the middle when no
-   files are open) now shows the icon of the LAST language you
-   edited:
+   The empty-editor watermark shows the icon of the LAST
+   language you edited:
      edit a Python file -> close all editors -> Python logo
      edit an HTML file  -> close all editors -> HTML logo
 
@@ -140,14 +139,12 @@ document.addEventListener('DOMContentLoaded', function() {
    - Any language not listed falls back to "default".
    - Use data URIs. file:/// paths may be blocked by VS Code's
      content security policy.
-   - Icon SIZE is controlled in vscode-css.css, section 7
-     (.editor-group-watermark .letterpress).
+   - Icon SIZE is controlled in vscode-css.css, section 7.
    ============================================================ */
 
-/* Generic </> icon — used as the fallback and as a placeholder
-   until you paste your own data URIs below. */
+/* Generic </> icon — fallback + placeholder until you paste
+   your own data URIs below. */
 const DEFAULT_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235D6E7A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 5l-7 7 7 7'/%3E%3Cpath d='M16 5l7 7-7 7'/%3E%3C/svg%3E";
-
 const LANGUAGE_ICONS = {
   "default":         DEFAULT_ICON,
   "python":          "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools --%3E%3Csvg width='800px' height='800px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle%3Epython %5B%23127%5D%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Dribbble-Light-Preview' transform='translate(-340.000000, -7599.000000)' fill='%23000000'%3E%3Cg id='icons' transform='translate(56.000000, 160.000000)'%3E%3Cpath d='M296.744,7457.45798 C296.262,7457.45798 295.872,7457.06594 295.872,7456.58142 C295.872,7456.0969 296.262,7455.70587 296.744,7455.70587 C297.226,7455.70587 297.616,7456.0969 297.616,7456.58142 C297.616,7457.06594 297.226,7457.45798 296.744,7457.45798 M294.072,7459 C299.15,7459 298.833,7456.78649 298.833,7456.78649 L298.827,7454.49357 L293.982,7454.49357 L293.982,7453.80499 L300.751,7453.80499 C300.751,7453.80499 304,7454.17591 304,7449.02614 C304,7443.87636 301.165,7444.0583 301.165,7444.0583 L299.472,7444.0583 L299.472,7446.44873 C299.472,7446.44873 299.563,7449.29855 296.682,7449.29855 L291.876,7449.29855 C291.876,7449.29855 289.176,7449.25533 289.176,7451.9222 L289.176,7456.33112 C289.176,7456.33112 288.766,7459 294.072,7459 M291.257,7440.54202 C291.739,7440.54202 292.128,7440.93406 292.128,7441.41858 C292.128,7441.9031 291.739,7442.29413 291.257,7442.29413 C290.775,7442.29413 290.385,7441.9031 290.385,7441.41858 C290.385,7440.93406 290.775,7440.54202 291.257,7440.54202 M293.928,7439 C288.851,7439 289.168,7441.21351 289.168,7441.21351 L289.174,7443.50643 L294.019,7443.50643 L294.019,7444.19501 L287.249,7444.19501 C287.249,7444.19501 284,7443.82409 284,7448.97386 C284,7454.12364 286.836,7453.9417 286.836,7453.9417 L288.528,7453.9417 L288.528,7451.55127 C288.528,7451.55127 288.437,7448.70145 291.319,7448.70145 L296.124,7448.70145 C296.124,7448.70145 298.824,7448.74467 298.824,7446.0778 L298.824,7441.66888 C298.824,7441.66888 299.234,7439 293.928,7439' id='python-%5B%23127%5D'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E", /* <<< REPLACE with your Python SVG data URI */
@@ -166,7 +163,6 @@ const LANGUAGE_ICONS = {
 };
 
 /* ---------------- engine — no need to edit below ---------------- */
-
 let lastWatermarkLang = "default";
 
 /* VS Code puts the language id on every file label as a class:
@@ -188,15 +184,11 @@ function applyWatermarkIcon() {
   const icon = LANGUAGE_ICONS[lastWatermarkLang] || LANGUAGE_ICONS["default"];
   const url = 'url("' + icon + '")';
 
-  /* The watermark element only exists while an editor group is
-     empty, and VS Code re-creates it every time — so re-apply often. */
+  /* The watermark only exists while an editor group is empty,
+     and VS Code re-creates it every time — so re-apply often. */
   document.querySelectorAll(".editor-group-watermark .letterpress").forEach((el) => {
     if (el.style.backgroundImage !== url) {
       el.style.backgroundImage = url;
     }
   });
 }
-
-/* Light polling — cheap, and survives VS Code re-rendering the DOM */
-setInterval(applyWatermarkIcon, 800);
-window.addEventListener("load", () => setTimeout(applyWatermarkIcon, 1200));

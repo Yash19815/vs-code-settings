@@ -6,8 +6,8 @@
    3. Scrollbars / shadows / tooltips
    4. Titlebar
    5. Command palette (blur)
-   6. Terminal — floating glass overlay   <-- NEW
-   7. Watermark — dynamic language icon   <-- NEW
+   6. Terminal panel — MINIMAL (terminal-only workflow)
+   7. Watermark — dynamic language icon
    ========================================================= */
 
 
@@ -78,9 +78,8 @@
 }
 
 /* Sidebar top shadow
-   NOTE: this rule is now SCOPED to the sidebar. Before, it matched
-   every scrollable area in the workbench — including the panel —
-   which is what drew the dark line under the TERMINAL/PORTS tabs. */
+   Scoped to the sidebar only — unscoped it also hits the panel
+   and draws a dark line under the TERMINAL/PORTS tabs. */
 .part.sidebar .monaco-scrollable-element > .shadow.top {
   box-shadow: 0px 0px 10px rgba(0,0,0,.75) !important;
   top: -3px !important;
@@ -218,7 +217,7 @@
 
 /* Actions after command palette text input */
 .quick-input-inline-action-bar .actions-container .action-item {
-  margin-bottom: 16px !important; /* Same margin-bottom as .monaco-inputbox */
+  margin-bottom: 16px !important;
 }
 
 .quick-input-header {
@@ -232,67 +231,65 @@
 
 
 /* =========================================================
-   6. TERMINAL — FLOATING GLASS OVERLAY
+   6. TERMINAL PANEL — MINIMAL
    ---------------------------------------------------------
-   How it works:
-   - VS Code's grid normally SHRINKS the editor when the bottom
-     panel opens. The first rule pins the editor to 100% height,
-     so the editor always keeps full length.
-   - The panel keeps the position/height the grid gives it
-     (dragging the sash still resizes it), but now it simply
-     floats ON TOP of the editor instead of pushing it up.
-   - backdrop-filter blurs whatever is behind the panel — i.e.
-     your code — while the rest of the window stays sharp.
+   Hides the whole panel tab/tool bar (PROBLEMS / OUTPUT /
+   DEBUG CONSOLE / TERMINAL / PORTS + the icon cluster on the
+   right). You only use the terminal here — everything that
+   lived on that bar is one shortcut away:
+
+     Ctrl+`          toggle this panel open/closed
+     Ctrl+Shift+`    new terminal
+     Ctrl+Shift+5    split terminal
+     Ctrl+Shift+M    Problems panel
+     Ctrl+Shift+U    Output panel
+     Ctrl+Shift+Y    Debug Console panel
+
+   (Opening Problems/Output via shortcut still works — the
+   content shows, just without the tab bar.)
+
+   To get the bar back: delete the first rule below and reload.
    ========================================================= */
 
-/* Editor always keeps the full height of its area */
-.monaco-workbench .part.editor {
-  height: 100% !important;
-}
-
-/* The panel becomes the glass layer floating over the code */
-.monaco-workbench .part.panel {
-  z-index: 20 !important;                          /* paint above the editor */
-  background: rgba(17, 19, 28, 0.55) !important;   /* tint over the blur —
-                                                      raise the 0.55 to darken,
-                                                      lower for more see-through */
-  backdrop-filter: blur(14px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
-  border: none !important;                         /* kills the top separator line */
-  box-shadow: none !important;
-}
-
-/* Everything INSIDE the panel must be transparent, otherwise a
-   solid background would hide the blur behind it */
+/* Hide the entire panel title/tool bar */
 .part.panel .composite.title,
 .part.panel .titlebar-container,
-.part.panel .panel-switcher-container,
-.part.panel .pane-composite-part,
-.part.panel .pane-body,
-.part.panel .terminal-outer-container,
-.part.panel .terminal-wrapper,
-.part.panel .terminal-tabs,
-.part.panel .xterm,
-.part.panel .xterm-viewport,
-.part.panel .xterm-screen,
-.part.panel .monaco-list,
-.part.panel .monaco-list-rows {
-  background: transparent !important;
-  background-color: transparent !important;
+.part.panel .panel-switcher-container {
+  display: none !important;
 }
 
-/* --- Remove the dark horizontal line under the panel tabs --- */
-/* 1) scroll shadow drawn at the top of panel content */
+/* OPTIONAL alternative: keep the icon buttons (new/split/kill/
+   close) and hide ONLY the text tabs on the left.
+   To use this instead: comment out the rule above, uncomment
+   the rule below.
+
+.part.panel .composite-bar-container {
+  display: none !important;
+}
+*/
+
+/* Small breathing room at the top of the terminal now that
+   the bar is gone */
+.part.panel .terminal-outer-container {
+  padding-top: 6px !important;
+}
+
+/* Keep the panel surface plain — no leftover lines/shadows */
+.monaco-workbench .part.panel {
+  border: none !important;
+  box-shadow: none !important;
+}
 .part.panel .monaco-scrollable-element > .shadow,
 .part.panel .monaco-scrollable-element > .shadow.top {
   box-shadow: none !important;
 }
-/* 2) any border between the tab row and the content */
 .part.panel .composite.title,
 .part.panel .titlebar-container,
-.part.panel .pane-header {
+.part.panel .pane-header,
+.part.panel .pane-composite-part {
   border: none !important;
   box-shadow: none !important;
+  outline: none !important;
 }
 
 
@@ -300,12 +297,11 @@
    7. WATERMARK — DYNAMIC LANGUAGE ICON
    ---------------------------------------------------------
    The icon IMAGE is set by vscode-script.js (Part 2), based on
-   the last language you edited. This block only controls the
-   SIZE and placement of the icon box.
+   the last language you edited. This block only controls SIZE.
 
    >>> Do NOT add a background-image here with !important — <<<
-   >>> that would override the JavaScript and the icons      <<<
-   >>> would never change.                                   <<<
+   >>> it would override the JavaScript and the icons would  <<<
+   >>> never change.                                         <<<
    ========================================================= */
 
 .editor-group-watermark {
@@ -313,10 +309,10 @@
 }
 
 .editor-group-watermark .letterpress {
-  width: 260px !important;                 /* icon box width  — make bigger/smaller */
-  height: 260px !important;                /* icon box height — keep equal to width */
-  background-size: contain !important;     /* icon scales to fit inside the box */
+  width: 260px !important;                 /* icon box width  */
+  height: 260px !important;                /* icon box height */
+  background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center center !important;
-  opacity: 0.45;                           /* 0 = invisible, 1 = solid */
+  opacity: 0.45;
 }
