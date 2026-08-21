@@ -3,13 +3,14 @@
   // Glenn Raya - Minimalist Theme & UI Config
   // ==========================================
   "editor.fontFamily": "'JetBrains Mono', 'Fira Code', Consolas, monospace",
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.fontSize": 14,
   "editor.lineHeight": 1.6,
   "editor.fontLigatures": true,
-  "editor.cursorBlinking": "smooth",
+  "editor.cursorBlinking": "expand",
   "editor.cursorSmoothCaretAnimation": "on",
   "editor.smoothScrolling": true,
-  "editor.minimap.enabled": false,
+  "editor.minimap.enabled": true,
   "editor.renderLineHighlight": "none",
   "editor.guides.indentation": false,
   "editor.scrollbar.vertical": "auto",
@@ -19,7 +20,7 @@
   "editor.linkedEditing": true,
   "workbench.startupEditor": "none",
   "workbench.tips.enabled": false,
-  "workbench.activityBar.location": "top",
+  "workbench.activityBar.location": "bottom",
   "workbench.statusBar.visible": false,
   "workbench.layoutControl.enabled": false,
   "workbench.colorCustomizations": {
@@ -36,5 +37,6 @@
     "file:///D:/DATA/Documents(old)/projects/vs-code/vscode-css.css",
     "file:///D:/DATA/Documents(old)/projects/vs-code/vscode-script.js"
   ],
-  "vscode_custom_css.policy": true
+  "vscode_custom_css.policy": true,
+  "workbench.colorTheme": "React Dev Theme (dark)"
 }
